@@ -1,0 +1,345 @@
+version: '3.7'
+
+services:
+  jackett:
+    container_name: jackett
+    image: linuxserver/jackett:latest
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - PORT=9117
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${ROOT}/downloads/torrent-blackhole:/downloads
+      - ${ROOT}/config/jackett:/config
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+
+  nzbget:
+    container_name: nzbget
+    image: linuxserver/nzbget:latest
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - PORT=6789
+    volumes:
+      - ${ROOT}/downloads:/downloads
+      - ${ROOT}/config/nzbget:/config
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+
+  hydra:
+    image: "linuxserver/hydra"
+    hostname: hydra
+    container_name: "hydra"
+    volumes:
+      - ${ROOT}/config/hydra:/config
+      - ${ROOT}/downloads:/downloads
+      - ${ROOT}/shared/hydra:/shared
+    ports:
+      - "5075:5075"
+    restart: always
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - PORT=5075
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+
+  sonarr:
+    container_name: sonarr
+    image: ghcr.io/linuxserver/sonarr:latest
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - PORT=8989
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${ROOT}/config/sonarr:/config 
+      - ${MERGERFS_ROOT}/complete/anime:/anime 
+      - ${MERGERFS_ROOT}/complete/anime-series:/anime-series 
+      - ${MERGERFS_ROOT}/complete/tv-cartoons:/cartoons 
+      - ${MERGERFS_ROOT}/complete/tv:/tv 
+      - ${ROOT}/downloads:/downloads 
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+
+  radarr:
+    container_name: radarr
+    image: linuxserver/radarr:latest
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - PUID=${PUID} 
+      - PGID=${PGID} 
+      - TZ=${TZ}
+      - PORT=7878
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${ROOT}/config/radarr:/config 
+      - ${MERGERFS_ROOT}/complete/movie-cartoons:/cartoons 
+      - ${MERGERFS_ROOT}/complete/movies:/movies 
+      - ${MERGERFS_ROOT}/complete/anime-movies:/anime-movies
+      - ${ROOT}/downloads:/downloads 
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+
+  lidarr:
+    image: linuxserver/lidarr
+    container_name: lidarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - UMASK_SET=022 
+    volumes:
+      - ${ROOT}/config/lidarr/config:/config
+      - ${MERGERFS_ROOT}/complete/music:/music
+      - ${ROOT}/downloads:/downloads
+    ports:
+      - 8686:8686
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+
+  plex-server:
+    container_name: plex-server
+    image: linuxserver/plex
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - VERSION=docker
+      - UMASK_SET=022
+      #- PLEX_CLAIM=claim-E-code # optional
+      - PORT=32400
+    network_mode: host
+    devices:
+      - /dev/dri:/dev/dri
+    volumes:
+      - ${SSD_ROOT}/config/plex/db:/config 
+      - ${SSD_ROOT}/config/plex/transcode:/transcode 
+      - ${MERGERFS_ROOT}/complete:/data 
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+
+  autoscan:
+    image: hotio/autoscan
+    container_name: autoscan
+    restart: unless-stopped
+    networks:
+      - public
+    ports:
+      - 18085:3030
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - UMASK_SET=022
+      - TZ=${TZ}
+      #- PLEX_LOGIN: ""
+      #- PLEX_PASSWORD: ""
+    volumes:
+      - ${ROOT}/config/autoscan/config:/config
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+
+  tautulli:
+    container_name: tautulli
+    image: linuxserver/tautulli:latest
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${ROOT}/config/tautulli:/config
+      - ${SSD_ROOT}/config/plex/db/Library:/logdata
+    ports:
+      - 18081:8181
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+
+  conreq:
+    image: hotio/conreq
+    container_name: conreq
+    restart: unless-stopped
+    ports:
+      - "18088:8000"
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - UMASK=002
+      - TZ=${TZ}
+    volumes:
+      - ${ROOT}/config/conreq:/config
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+
+  # comic book collection manager
+  mylar:
+    image: ghcr.io/linuxserver/mylar
+    container_name: mylar
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${ROOT}/config/mylar/config:/config
+      - ${MERGERFS_ROOT}/complete/comics:/comics
+      - ${ROOT}/downloads:/downloads
+    ports:
+      - 18087:8090
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+
+  # ebook collection manager
+  readarr:
+    image: hotio/readarr:nightly
+    container_name: readarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${ROOT}/config/readarr/config:/config
+      - ${MERGERFS_ROOT}/complete/books:/data/media/books
+      - ${ROOT}/downloads:/data/downloads
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 18082:8787
+    networks:
+      - public
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+
+  muximux:
+    image: linuxserver/muximux
+    container_name: muximux
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${ROOT}/config/muximux/config:/config
+    ports:
+      - 18081:80
+    networks:
+      - public
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+
+  glances:
+    image: nicolargo/glances:3.2.4.2-full
+    container_name: glances
+    restart: unless-stopped
+    pid: "host"
+    ports:
+      - 61208:61208
+      - 61209:61209
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - GLANCES_OPT="-w"
+    networks:
+      - public
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+
+  transmission-vpn:
+    container_name: transmission-vpn
+    hostname: transmission
+    image: haugene/transmission-openvpn
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    restart: always
+    ports:
+    - "9091:9091"
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${ROOT}/config/transmission-vpn/docker/transmission-vpn:/transmission-vpn
+      - ${ROOT}/config/transmission-vpn/docker/shared:/shared
+      - ${ROOT}/downloads:/downloads
+    environment:
+      - OPENVPN_PROVIDER=PIA
+      - OPENVPN_USERNAME=${PIA_USERNAME}
+      - OPENVPN_PASSWORD=${PIA_PASSWORD}
+      - OPENVPN_CONFIG=france
+      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
+      - LOCAL_NETWORK=192.168.0.0/24
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=true
+      - TRANSMISSION_RPC_HOST_WHITELIST="127.0.0.1,192.168.*.*"
+      - TRANSMISSION_RPC_PASSWORD=${TRANSMISSION_RPC_PASSWORD}
+      - TRANSMISSION_RPC_USERNAME=${TRANSMISSION_RPC_USERNAME}
+      - TRANSMISSION_UMASK=002
+      - TRANSMISSION_RATIO_LIMIT=0.01
+      - TRANSMISSION_RATIO_LIMIT_ENABLED=true
+      - TRANSMISSION_ALT_SPEED_DOWN=2000
+      - TRANSMISSION_ALT_SPEED_ENABLED=true
+      - TRANSMISSION_ALT_SPEED_UP=15
+      - TRANSMISSION_SPEED_LIMIT_DOWN=6000
+      - TRANSMISSION_SPEED_LIMIT_DOWN_ENABLED=true
+      - TRANSMISSION_SPEED_LIMIT_UP=30
+      - TRANSMISSION_SPEED_LIMIT_UP_ENABLED=true
+      - TRANSMISSION_INCOMPLETE_DIR=/downloads/incomplete
+      - TRANSMISSION_INCOMPLETE_DIR_ENABLED=true
+      - TRANSMISSION_WATCH_DIR=/downloads
+      - TRANSMISSION_WATCH_DIR_ENABLED=true
+      - TRANSMISSION_DOWNLOAD_DIR=/downloads/completed
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+
+networks:
+  public:
+    name: public
