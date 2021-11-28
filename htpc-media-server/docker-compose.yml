@@ -123,6 +123,49 @@ services:
       driver: "json-file"
       options:
         max-size: "1m"
+  
+  # comic book collection manager
+  mylar:
+    image: ghcr.io/linuxserver/mylar
+    container_name: mylar
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${ROOT}/config/mylar/config:/config
+      - ${MERGERFS_ROOT}/complete/comics:/comics
+      - ${ROOT}/downloads:/downloads
+    ports:
+      - 18087:8090
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+
+  # ebook collection manager
+  readarr:
+    image: hotio/readarr:nightly
+    container_name: readarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${ROOT}/config/readarr/config:/config
+      - ${MERGERFS_ROOT}/complete/books:/data/media/books
+      - ${ROOT}/downloads:/data/downloads
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 18082:8787
+    networks:
+      - public
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
 
   plex-server:
     container_name: plex-server
@@ -201,49 +244,6 @@ services:
       - TZ=${TZ}
     volumes:
       - ${ROOT}/config/conreq:/config
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-
-  # comic book collection manager
-  mylar:
-    image: ghcr.io/linuxserver/mylar
-    container_name: mylar
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ${ROOT}/config/mylar/config:/config
-      - ${MERGERFS_ROOT}/complete/comics:/comics
-      - ${ROOT}/downloads:/downloads
-    ports:
-      - 18087:8090
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-
-  # ebook collection manager
-  readarr:
-    image: hotio/readarr:nightly
-    container_name: readarr
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ${ROOT}/config/readarr/config:/config
-      - ${MERGERFS_ROOT}/complete/books:/data/media/books
-      - ${ROOT}/downloads:/data/downloads
-      - /etc/localtime:/etc/localtime:ro
-    ports:
-      - 18082:8787
-    networks:
-      - public
-    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
