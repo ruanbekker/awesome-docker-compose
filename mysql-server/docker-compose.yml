@@ -1,0 +1,30 @@
+version: '3.6'
+
+services:
+  mysql-db:
+    image: mariadb:10.3.23
+    container_name: mysql-db
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_USER=dba
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=my_db
+    volumes:
+      - ./data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysql" ,"-h", "mysql-db", "-P", "3306", "-u", "root", "-prootpassword", "-e", "SELECT VERSION()"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    networks:
+      - public
+
+networks:
+  public:
+    name: public
