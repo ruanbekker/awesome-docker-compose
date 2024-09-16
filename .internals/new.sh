@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PROJECT_NAME=""
+PROJECT_NAME="${PROJECT_NAME}"
 
 if [[ ! -n "${PROJECT_NAME}" ]]
   then

@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  socks5-proxy:
+    image: serjs/go-socks5-proxy
+    container_name: socks5-proxy
+    restart: unless-stopped
+    environment:
+      - PROXY_USER=
+      - PROXY_PASSWORD=
+    ports:
+      - 1080=1080
+    networks:
+      - public
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "11m"
+        max-file: "1"
+
+networks:
+  public:
+    name: public
