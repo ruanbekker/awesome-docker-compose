@@ -35,3 +35,16 @@ networks:
   public:
     name: public
 EOF
+
+cat > "${PROJECT_NAME}/README.md" << EOF
+# ${PROJECT_NAME}
+
+Docker Compose for ${PROJECT_NAME}
+
+## Containers
+
+| Name              | Description                | Port  |
+| :---------------- | :------------------------: | ----: |
+| ${PROJECT_NAME}   | changeme                   | replace_targetport  |
+
+EOF
