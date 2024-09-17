@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  remote-desktop:
+    image: lscr.io/linuxserver/rdesktop:arch-xfce
+    container_name: remote-desktop
+    restart: unless-stopped
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - 3389:3389
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
+    devices:
+      - /dev/dri:/dev/dri
+    shm_size: "1gb"
+    networks:
+      - public
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+networks:
+  public:
+    name: public

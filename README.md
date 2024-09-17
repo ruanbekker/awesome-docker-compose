@@ -7,6 +7,7 @@ My Collection of Docker Compose Files
 - [htpc-media-server](./htpc-media-server/)
 - [mysql-phpadmin](./mysql-phpadmin)
 - [mysql-server](./mysql-server)
+- [remote-desktop](./remote-desktop)
 - [socks5-proxy](./socks5-proxy)
 
 
