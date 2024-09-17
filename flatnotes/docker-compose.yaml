@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  flatnotes:
+    container_name: flatnotes
+    image: dullage/flatnotes:latest
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - FLATNOTES_AUTH_TYPE=password
+      - FLATNOTES_USERNAME=admin
+      - FLATNOTES_PASSWORD=password
+      - FLATNOTES_SECRET_KEY=d807d5da3427cff87aac3681436ccb13
+    volumes:
+      - ./state/data:/data
+      - ./state/index:/data/.flatnotes
+    networks:
+      - public
+
+networks:
+  public:
+    name: public
