@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+    ports:
+      - 3000:3000
+    volumes:
+      - ./state:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - public
+
+networks:
+  public:
+    name: public
