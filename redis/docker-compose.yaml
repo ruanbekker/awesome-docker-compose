@@ -1,0 +1,35 @@
+version: '3.8'
+
+x-extras: &extras
+  restart: unless-stopped
+  networks:
+    - public
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "1m"
+      max-file: "1"
+
+services:
+  redis:
+    image: redis:6.0
+    container_name: redis
+    ports:
+      - 6379:6379
+    <<: *extras    
+
+  redis-insights-api:
+    image: redis/redisinsight:2.56.0
+    container_name: redis-insights-api
+    user: root
+    ports:
+      - 5540:5540
+    volumes:
+      - ./state/redis-insights-api:/data
+    depends_on:
+      - redis
+    <<: *extras
+
+networks:
+  public:
+    name: public
