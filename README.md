@@ -5,6 +5,7 @@ My Collection of Docker Compose Files
 ## Collection
 
 - [Analytics](#analytics)
+- [Blockchain](#blockchain)
 - [Connectivity Tools](#connectivity-tools)
 - [Dashboards](#dashboards)
 - [Databases](#databases)
@@ -33,6 +34,7 @@ My Collection of Docker Compose Files
 - [mysql-phpadmin](./mysql-phpadmin)
 - [mysql-server](./mysql-server)
 - [postgresql](./postgresql)
+- [redis](./redis)
 
 ## Media Servers
 
