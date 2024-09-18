@@ -1,0 +1,117 @@
+version: '3.8'
+
+x-extras: &extras
+  networks:
+    - public
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "1m"
+      max-file: "1"
+
+services:
+  geth:
+    image: ethereum/client-go:v1.14.8
+    container_name: geth
+    restart: always
+    command: 
+      - '--sepolia'
+      - '--authrpc.vhosts=*'
+      # - '--authrpc.vhosts=localhost,geth,prysm-beacon'
+      - '--authrpc.jwtsecret=/shared/jwt.hex'
+      - '--cache=1024' # 1024MB
+      - '--datadir=/geth'
+      - '--http'
+      - '--http.addr=0.0.0.0'
+      - '--http.api=engine,eth,net,web3,admin,debug,txpool'
+      - '--http.port=8545'
+      - '--http.vhosts=*'
+      - '--metrics' 
+      - '--metrics.addr=0.0.0.0'
+      - '--metrics.port=9191'
+      - '--port=30303'
+      - '--syncmode=snap'
+      - '--ws'
+      - '--ws.port=8546'
+      - '--ws.addr=0.0.0.0'
+    stop_signal: SIGTERM
+    stop_grace_period: 10m
+    ports:
+      - 30303:30303/tcp
+      - 30303:30303/udp
+      - 8545:8545
+    volumes:
+      - geth-data:/geth
+      - ./shared-data:/shared
+    <<: *extras
+
+  prysm-beacon:
+    image: prysmaticlabs/prysm-beacon-chain:v5.1.0
+    container_name: beacon-chain
+    restart: unless-stopped
+    command:
+      - '--sepolia'
+      - '--accept-terms-of-use'
+      - '--datadir=/prysm'
+      - '--jwt-secret=/shared/jwt.hex'
+      - '--execution-endpoint=http://geth:8545'
+      # - '--execution-endpoint=/geth/geth.ipc' 
+      - '--suggested-fee-recipient=0x746C9474d98C8A99280fC0E9DA7d706B647163DE'
+      - '--genesis-state=/shared/genesis.ssz' 
+      - '--checkpoint-sync-url=https://checkpoint-sync.sepolia.ethpandaops.io' 
+      - '--genesis-beacon-api-url=https://checkpoint-sync.sepolia.ethpandaops.io' 
+      - '--monitoring-host=0.0.0.0'
+      - '--monitoring-port=8080'
+    stop_signal: SIGTERM
+    stop_grace_period: 5m
+    depends_on:
+      - geth
+    ports:
+      - 127.0.0.1:4000:4000
+      - 13000:13000/tcp
+      - 12000:12000/udp
+    volumes:
+      - prysm-data:/data
+      - ./shared-data:/shared
+    <<: *extras
+    
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: prometheus
+    user: root
+    restart: on-failure
+    command: 
+      - '--storage.tsdb.retention.time=7d' 
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    volumes:
+      - ./configs/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    <<: *extras
+      
+  grafana:
+    image: grafana/grafana:11.2.0
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    volumes:
+      - ./configs/grafana/provisioning:/etc/grafana/provisioning
+      - grafana-data:/var/lib/grafana
+    <<: *extras
+
+volumes:
+  grafana-data: {}
+  prometheus-data: {}
+  geth-data: {}
+  prysm-data: {}
+
+networks:
+  public:
+    name: public
