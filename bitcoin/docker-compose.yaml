@@ -1,0 +1,77 @@
+version: '3.8'
+
+x-extras: &extras
+  networks:
+    - public
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "1m"
+      max-file: "1"
+
+services:
+  bitcoin:
+    image: bitcoin/bitcoin:27
+    container_name: bitcoin
+    build: .
+    restart: unless-stopped
+    command:
+      - '-testnet=1'
+      - '-server=1'
+      - '-rest=1'
+      - '-rpcuser=bitcoinrpc'
+      - '-rpcpassword=bitcoinrpc'
+      - '-rpcallowip=0.0.0.0/0'
+      - '-txindex=1'
+      - '-rpcbind=0.0.0.0'
+      - '-rpcport=18332'
+      - '-zmqpubrawblock=tcp://0.0.0.0:28332'
+      - '-zmqpubrawtx=tcp://0.0.0.0:28333'
+    stop_signal: SIGTERM
+    stop_grace_period: 5m
+    ports:
+      - 18332:18332
+      - 18333:18333
+      - 28332:28332
+      - 28333:28333
+    volumes:
+      - bitcoin-data:/data
+    healthcheck:
+      test: curl --fail "http://bitcoinrpc:bitcoinrpc@localhost:18332/rest/chaininfo.json" || exit 1
+      interval: 2s
+      retries: 100
+      start_period: 2s
+      timeout: 2s
+    <<: *extras
+
+  bitcoin-explorer:
+    container_name: bitcoin-explorer
+    restart: unless-stopped
+    build:
+      context: https://github.com/janoside/btc-rpc-explorer.git
+      dockerfile: Dockerfile
+    environment:
+      - BTCEXP_HOST=0.0.0.0
+      - BTCEXP_PORT=3000
+      - BTCEXP_BITCOIND_URI=bitcoin://bitcoinrpc:bitcoinrpc@bitcoin:18332?timeout=10000
+      - BTCEXP_REDIS_URL=redis://redis:6379
+    depends_on:
+      - bitcoin
+      - redis
+    ports:
+      - 3000:3000
+    <<: *extras
+
+  redis:
+    image: redis:6.0
+    container_name: redis
+    restart: unless-stopped
+    <<: *extras
+
+volumes:
+  bitcoin-data:
+    driver: local
+
+networks:
+  public:
+    name: public
