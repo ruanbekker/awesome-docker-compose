@@ -32,6 +32,7 @@ My Collection of Docker Compose Files
 
 - [mysql-phpadmin](./mysql-phpadmin)
 - [mysql-server](./mysql-server)
+- [postgresql](./postgresql)
 
 ## Media Servers
 
