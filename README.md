@@ -9,6 +9,7 @@ My Collection of Docker Compose Files
 - [Connectivity Tools](#connectivity-tools)
 - [Dashboards](#dashboards)
 - [Databases](#databases)
+- [Development Environments](#development-environments)
 - [Media Servers](#media-servers)
 - [Wiki and Note Taking Apps](#wiki-and-note-taking-apps)
 
@@ -35,6 +36,10 @@ My Collection of Docker Compose Files
 - [mysql-server](./mysql-server)
 - [postgresql](./postgresql)
 - [redis](./redis)
+
+## Development Environments
+
+- [coder](./coder)
 
 ## Media Servers
 

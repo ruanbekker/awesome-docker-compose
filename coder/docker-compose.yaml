@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  coder:
+    image: ghcr.io/coder/coder:${CODER_VERSION:-latest}
+    container_name: coder
+    restart: unless-stopped
+    ports:
+      - 7080:7080
+    group_add:
+      - 1000
+    environment:
+      - CODER_PG_CONNECTION_URL=postgresql://${POSTGRES_USER:-username}:${POSTGRES_PASSWORD:-password}@coder-db/${POSTGRES_DB:-coder}?sslmode=disable
+      - CODER_HTTP_ADDRESS=0.0.0.0:7080
+      # You'll need to set CODER_ACCESS_URL to an IP or domain
+      # that workspaces can reach. eg. https://coder.example.com 
+      # This cannot be localhost or 127.0.0.1 for non-Docker templates
+      - CODER_ACCESS_URL=${CODER_ACCESS_URL}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - public
+    depends_on:
+      coder-db:
+        condition: service_healthy
+
+  coder-db:
+    image: postgres:16
+    container_name: coder-db
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-username}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
+      - POSTGRES_DB=${POSTGRES_DB:-coder}
+    volumes:
+      - coder-data:/var/lib/postgresql/data
+    networks:
+      - public
+    healthcheck:
+      test:
+        [ "CMD-SHELL","pg_isready -U ${POSTGRES_USER:-username} -d ${POSTGRES_DB:-coder}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  coder-data:
+    driver: local
+
+networks:
+  public:
+    name: public
