@@ -53,3 +53,4 @@ My Collection of Docker Compose Files
 ## Wiki and Note Taking Apps
 
 - [flatnotes](./flatnotes)
+- [haptic](./haptic)
