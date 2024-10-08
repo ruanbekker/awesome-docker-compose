@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  haptic:
+    image: chroxify/haptic-web:latest
+    container_name: haptic
+    restart: unless-stopped
+    ports:
+      - 3000:80
+    networks:
+      - public
+
+networks:
+  public:
+    name: public
