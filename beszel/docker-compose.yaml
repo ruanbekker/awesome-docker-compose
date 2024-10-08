@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  beszel:
+    image: henrygd/beszel
+    container_name: beszel
+    restart: unless-stopped
+    ports:
+      - 8090:8090
+    volumes:
+      - beszel-data:/beszel_data
+    networks:
+      - public
+
+volumes:
+  beszel-data:
+    driver: local
+
+networks:
+  public:
+    name: public
