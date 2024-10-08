@@ -11,6 +11,7 @@ My Collection of Docker Compose Files
 - [Databases](#databases)
 - [Development Environments](#development-environments)
 - [Media Servers](#media-servers)
+- [Monitoring](#monitoring)
 - [Wiki and Note Taking Apps](#wiki-and-note-taking-apps)
 
 ### Analytics
@@ -44,6 +45,10 @@ My Collection of Docker Compose Files
 ## Media Servers
 
 - [htpc-media-server](./htpc-media-server/)
+
+## Monitoring
+
+- [beszel](./beszel)
 
 ## Wiki and Note Taking Apps
 
