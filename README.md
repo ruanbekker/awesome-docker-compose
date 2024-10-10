@@ -52,5 +52,6 @@ My Collection of Docker Compose Files
 
 ## Wiki and Note Taking Apps
 
+- [kalmia](./kalmia)
 - [flatnotes](./flatnotes)
 - [haptic](./haptic)

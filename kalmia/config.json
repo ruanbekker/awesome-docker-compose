@@ -1,0 +1,30 @@
+{
+  "environment": "production",
+  "port": 2727,
+  "database": "postgres://postgres:postgrespassword@kalmia-db:5432/kalmia?sslmode=disable",
+  "logLevel": "debug",
+  "sessionSecret": "thisisaexamplesecretforthisdemonstrationofkalmia!",
+  "users": [
+    {
+      "username": "admin",
+      "email": "admin@example.com",
+      "password": "admin",
+      "admin": true
+    },
+    {
+      "username": "user",
+      "email": "user@example.com",
+      "password": "user",
+      "admin": false
+    }
+  ],
+  "s3": {
+    "endpoint": "http://kalmia-minio:9000",
+    "region": "auto",
+    "accessKeyId": "kalmia-access-key",
+    "secretAccessKey": "kalmia-access-secret",
+    "bucket": "kalmia",
+    "usePathStyle": true,
+    "publicUrlFormat": "http://localhost:2727/%s"
+  }
+}

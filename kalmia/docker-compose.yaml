@@ -1,0 +1,84 @@
+services:
+  kalmia-app:
+    image: ruanbekker/kalmia:0.0.2
+    container_name: kalmia-app
+    #build:
+    #  context: .
+    #  dockerfile: Dockerfile
+    ports:
+      - 2727:2727
+    volumes:
+      - ./config.json:/app/config.json
+    environment:
+      - DATABASE_TYPE=postgres
+      - DATABASE_HOST=postgres
+      - DATABASE_USER=postgres
+      - DATABASE_NAME=kalmia
+      - DATABASE_PASSWORD=postgrespassword
+    networks:
+      - public
+    depends_on:
+      kalmia-db:
+        condition: service_healthy
+      kalmia-minio:
+        condition: service_started
+
+  kalmia-db:
+    image: postgres:15
+    container_name: kalmia-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespassword
+      - POSTGRES_DB=kalmia
+    volumes:
+      - ./kalmia-db:/var/lib/postgresql/data
+    networks:
+      - public
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d kalmia"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  kalmia-minio:
+    image: minio/minio:RELEASE.2024-10-02T17-50-41Z
+    container_name: kalmia-minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=kalmia-access-key
+      - MINIO_ROOT_PASSWORD=kalmia-access-secret
+    ports:
+      - 9001:9001
+    volumes:
+      - kalmia-minio:/data
+    networks:
+      - public
+
+  kalmia-bootstrap:
+    image: alpine:3.20
+    container_name: kalmia-bootstrap
+    restart: no
+    entrypoint: "/etc/minio/bootstrap.sh"
+    depends_on:
+      kalmia-minio:
+        condition: service_started
+    environment:
+      - AWS_ACCESS_KEY_ID=kalmia-access-key
+      - AWS_SECRET_ACCESS_KEY=kalmia-access-secret
+      - AWS_BUCKET=kalmia
+      - AWS_ENDPOINT=http://kalmia-minio:9000
+      - MINIO_HOST=kalmia-minio
+    volumes:
+      - ./configs/minio:/etc/minio
+    networks:
+      - public
+
+networks:
+  public:
+    name: public
+
+volumes:
+  kalmia-db:
+    driver: local
+  kalmia-minio:
+    driver: local
