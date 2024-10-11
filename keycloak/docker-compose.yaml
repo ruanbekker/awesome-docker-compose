@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  keycloak-db:
+    image: postgres:14
+    container_name: keycloak-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=keycloak
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d keycloak"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    networks:
+      - public
+
+  keycloak:
+    image: bitnami/keycloak:25-debian-12
+    container_name: keycloak
+    restart: unless-stopped
+    environment:
+      - KEYCLOAK_DATABASE_USER=keycloak
+      - KEYCLOAK_DATABASE_PASSWORD=password
+      - KEYCLOAK_DATABASE_HOST=keycloak-db
+      - KEYCLOAK_DATABASE_NAME=postgres
+      - KEYCLOAK_DATABASE_SCHEMA=public
+      - KEYCLOAK_HTTP_RELATIVE_PATH=/
+      - KEYCLOAK_HOSTNAME_ADMIN=http://127.0.0.1:8080/
+      - KEYCLOAK_HOSTNAME=http://127.0.0.1:8080/
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KEYCLOAK_HTTP_PORT=8080
+    ports:
+      - "8080:8080"
+      - "8787:8787"
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+    networks:
+      - public
+
+  configure-keycloak:
+    image: ruanbekker/containers:curl
+    container_name: configure-keycloak
+    restart: "no"
+    command: ./opt/keycloak-bootstrap.sh
+    volumes:
+      - ./init-scripts/keycloak-bootstrap.sh:/opt/keycloak-bootstrap.sh
+    depends_on:
+      keycloak:
+        condition: service_started
+    networks:
+      - public
+
+volumes:
+  postgres-data:
+    driver: local
+
+networks:
+  public:
+    name: public

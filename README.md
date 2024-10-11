@@ -10,6 +10,7 @@ My Collection of Docker Compose Files
 - [Dashboards](#dashboards)
 - [Databases](#databases)
 - [Development Environments](#development-environments)
+- [Identity and Access Management](#identity-and-access-management)
 - [Knowledge Base](#knowledge-base)
 - [Media Servers](#media-servers)
 - [Monitoring](#monitoring)
@@ -44,6 +45,10 @@ My Collection of Docker Compose Files
 ## Development Environments
 
 - [coder](./coder)
+
+## Identity and Access Management
+
+- [keycloak](./keycloak)
 
 ## Knowledge Base
 
