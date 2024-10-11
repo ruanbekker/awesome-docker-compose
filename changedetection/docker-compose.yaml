@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  changedetection:
+    image: ghcr.io/dgtlmoon/changedetection.io
+    container_name: changedetection
+    restart: unless-stopped
+    ports:
+      - 5000:5000
+    environment:
+      - PORT=5000
+    volumes:
+      - changedetection-data:/datastore
+    networks:
+      - public
+
+volumes:
+  changedetection-data:
+    driver: local
+
+networks:
+  public:
+    name: public

@@ -61,6 +61,7 @@ My Collection of Docker Compose Files
 ## Monitoring
 
 - [beszel](./beszel)
+- [changedetection](./changedetection)
 
 ## Project Management
 
