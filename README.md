@@ -73,3 +73,7 @@ My Collection of Docker Compose Files
 - [flatnotes](./flatnotes)
 - [haptic](./haptic)
 - [simple-wishlist](./simple-wishlist)
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/ruanbekker/awesome-docker-compose.svg)](https://starchart.cc/ruanbekker/awesome-docker-compose)
