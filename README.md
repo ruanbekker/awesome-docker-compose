@@ -10,6 +10,7 @@ My Collection of Docker Compose Files
 - [Dashboards](#dashboards)
 - [Databases](#databases)
 - [Development Environments](#development-environments)
+- [Knowledge Base](#knowledge-base)
 - [Media Servers](#media-servers)
 - [Monitoring](#monitoring)
 - [Project Management](#project-management)
@@ -43,6 +44,10 @@ My Collection of Docker Compose Files
 ## Development Environments
 
 - [coder](./coder)
+
+## Knowledge Base
+
+- [apache-answer](./apache-answer)
 
 ## Media Servers
 
