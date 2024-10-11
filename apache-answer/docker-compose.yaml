@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  apache-answer:
+    image: apache/answer:${APP_VERSION:-1.4.0}
+    container_name: apache-answer
+    restart: unless-stopped
+    ports:
+      - 9080:80
+    volumes:
+      - apache-answer-data:/data
+    networks:
+      - public
+
+volumes:
+  apache-answer-data:
+    driver: local
+
+networks:
+  public:
+    name: public
