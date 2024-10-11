@@ -12,6 +12,7 @@ My Collection of Docker Compose Files
 - [Development Environments](#development-environments)
 - [Media Servers](#media-servers)
 - [Monitoring](#monitoring)
+- [Project Management](#project-management)
 - [Wiki and Note Taking Apps](#wiki-and-note-taking-apps)
 
 ### Analytics
@@ -49,6 +50,10 @@ My Collection of Docker Compose Files
 ## Monitoring
 
 - [beszel](./beszel)
+
+## Project Management
+
+- [planka](./planka)
 
 ## Wiki and Note Taking Apps
 
