@@ -12,3 +12,6 @@ Docker Compose for changedetection
 | :---------------- | :------------------------: | ----: |
 | changedetection   | web-ui port                | 5000  |
 
+## Screenshots
+
+![changedetection-screenshots](https://raw.githubusercontent.com/dgtlmoon/changedetection.io/master/docs/screenshot.png)
