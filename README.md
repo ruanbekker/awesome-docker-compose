@@ -60,3 +60,4 @@ My Collection of Docker Compose Files
 - [kalmia](./kalmia)
 - [flatnotes](./flatnotes)
 - [haptic](./haptic)
+- [simple-wishlist](./simple-wishlist)
