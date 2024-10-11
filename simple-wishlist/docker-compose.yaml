@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  wishlist:
+    image: ajb3932/simple-wishlist:latest
+    container_name: wishlist
+    ports:
+      - 8092:8092
+    environment:
+      - DBHOST=wishlist-db:27017
+      - CURRENCY=ZAR
+      - LIST_NAME=My Wishlist
+      - LIST_TYPE=bday
+    depends_on:
+      wishlist-db:
+        condition: service_started
+    networks:
+      - public
+
+  wishlist-db:
+    image: mongo:4.4
+    container_name: wishlist-db
+    volumes:
+      - wishlist-db:/data/db
+    networks:
+      - public
+
+volumes:
+  wishlist-db:
+    driver: local
+
+networks:
+  public:
+    name: public
