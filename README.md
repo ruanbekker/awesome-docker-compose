@@ -34,6 +34,7 @@ My Collection of Docker Compose Files
 
 ## Databases
 
+- [kafka-cluster](./kafka-cluster)
 - [mysql-phpadmin](./mysql-phpadmin)
 - [mysql-server](./mysql-server)
 - [postgresql](./postgresql)
