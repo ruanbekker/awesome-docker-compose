@@ -6,8 +6,8 @@ Collection of HTPC Containers
 
 | Name              | Description                | Port  |
 | :---------------- | :------------------------: | ----: |
-| jackett           | torrent tracker api        | 9117  |
-| nzbget            | usenet downloader          | 6789  |
+| prowlarr          | nzb tracker api            | 9696  |
+| sabnzbd           | usenet downloader          | 6789  |
 | hydra             | usenet meta search         | 5075  |
 | sonarr            | series collection manager  | 8989  |
 | radarr            | movies collection manager  | 7878  |
@@ -17,7 +17,7 @@ Collection of HTPC Containers
 | plex              | media server               | 32400 |
 | autoscan          | autoscan for plex          | 3030  |
 | tautulli          | plex metrics               | 8181  |
-| conreq            | content request server     | 8000  |
+| overseerr         | content request server     | 5055  |
 | muximux           | webui for htpc apps        | 80    |
 | glances           | server monitoring          | 61208 |
 | transmission-vpn  | transmission over openvpn  | 9091  |

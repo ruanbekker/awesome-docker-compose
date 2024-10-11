@@ -1,38 +1,42 @@
 version: '3.7'
 
 services:
-  jackett:
-    container_name: jackett
-    image: linuxserver/jackett:latest
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:${PROWLARR_VERSION:-latest}
+    container_name: prowlarr
     restart: unless-stopped
-    network_mode: host
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - PORT=9117
     volumes:
+      - ${ROOT}/config/prowlarr/config:/config
       - /etc/localtime:/etc/localtime:ro
-      - ${ROOT}/downloads/torrent-blackhole:/downloads
-      - ${ROOT}/config/jackett:/config
+    ports:
+      - 9696:9696
+    networks:
+      - public
     logging:
       driver: "json-file"
       options:
         max-size: "1m"
 
-  nzbget:
-    container_name: nzbget
-    image: linuxserver/nzbget:latest
+  sabnzbd:
+    image: linuxserver/sabnzbd:latest
+    container_name: sabnzbd
     restart: unless-stopped
-    network_mode: host
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - PORT=6789
     volumes:
-      - ${ROOT}/downloads:/downloads
-      - ${ROOT}/config/nzbget:/config
+      - ${ROOT}/config/sabnzbd:/config
+      - ${ROOT}/sabnzbd/downloads:/downloads # sabnzbd downloads directory
+      - ${ROOT}/sabnzbd/incomplete:/incomplete-downloads #optional
+    ports:
+      - 6789:8080
+    networks:
+      - public
     logging:
       driver: "json-file"
       options:
@@ -231,20 +235,21 @@ services:
       options:
         max-size: "1m"
 
-  conreq:
-    image: hotio/conreq
-    container_name: conreq
+  overseerr:
+    image: lscr.io/linuxserver/overseerr:${OVERSEERR_VERSION:-latest}
+    container_name: overseerr
     restart: unless-stopped
-    ports:
-      - "18088:8000"
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
-      - UMASK=002
       - TZ=${TZ}
     volumes:
-      - ${ROOT}/config/conreq:/config
-    logging:
+      - ${ROOT}/config/overseerr:/config
+    ports:
+      - 5055:5055
+    networks:
+      - public
+    logging: 
       driver: "json-file"
       options:
         max-size: "1m"
