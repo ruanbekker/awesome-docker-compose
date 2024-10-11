@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PROJECT_NAME="${PROJECT_NAME}"
+PROJECT_NAME="${1}"
 
 if [[ ! -n "${PROJECT_NAME}" ]]
   then
@@ -48,3 +48,5 @@ Docker Compose for ${PROJECT_NAME}
 | ${PROJECT_NAME}   | changeme                   | replace_targetport  |
 
 EOF
+
+cp .internals/Makefile "${PROJECT_NAME}/Makefile"
