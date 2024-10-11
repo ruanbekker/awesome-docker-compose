@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  planka:
+    image: ghcr.io/plankanban/planka:${PLANKA_VERSION:-1.23.2}
+    container_name: planka
+    restart: unless-stopped
+    ports:
+      - 1337:1337
+    environment:
+      - BASE_URL=http://127.0.0.1:1337
+      - DATABASE_URL=postgresql://postgres:postgres@planka-db:5432/planka
+      - SECRET_KEY=examplesecretkey
+      - DEFAULT_ADMIN_USERNAME=planka
+      - DEFAULT_ADMIN_PASSWORD=password
+      - DEFAULT_ADMIN_NAME=Demo
+      - DEFAULT_ADMIN_EMAIL=demo@demo.demo
+      - TRUST_PROXY=0
+      - SHOW_DETAILED_AUTH_ERRORS=true
+      # see more:
+      # https://github.com/plankanban/planka/blob/89292356db6ad0985c5851b0b61af3429d28503c/docker-compose.yml#L13
+    networks:
+      - public
+    depends_on:
+      planka-db:
+        condition: service_healthy
+
+  planka-db:
+    image: postgres:15.6
+    container_name: planka-db
+    restart: on-failure
+    volumes:
+      - planka-db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=planka
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - public
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d planka"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  planka-db:
+    driver: local
+
+networks:
+  public:
+    name: public
