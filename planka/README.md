@@ -12,4 +12,9 @@ Docker Compose for planka
 | :---------------- | :------------------------: | ----: |
 | planka            | web-ui port                | 1337  |
 
+## More Info
 
+| URL                   | Username | Password   |
+| :-------------------- | :------: | ---------: |
+| http://localhost:1337 | planka   | password   |
+ 
