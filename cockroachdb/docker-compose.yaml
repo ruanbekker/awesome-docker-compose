@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  cockroachdb-1:
+    image: cockroachdb/cockroach:v24.2.3
+    container_name: cockroachdb-1
+    restart: unless-stopped
+    #command: start-single-node --insecure
+    command:
+      - 'start'
+      - '--advertise-addr=cockroachdb-1:26357'
+      - '--http-addr=cockroachdb-1:8081'
+      - '--listen-addr=cockroachdb-1:26357'
+      - '--sql-addr=cockroachdb-1:26257'
+      - '--insecure'
+      - '--join=cockroachdb-1:26357,cockroachdb-2:26357,cockroachdb-3:26357'
+      - '--accept-sql-without-tls'
+    ports:
+      - 8081:8081
+      - 26257:26257
+    volumes:
+      - cockroachdb-1-data:/cockroach/cockroach-data
+    networks:
+      - public
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://cockroachdb-1:8081/health?ready=0"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  cockroachdb-2:
+    image: cockroachdb/cockroach:v24.2.3
+    container_name: cockroachdb-2
+    restart: unless-stopped
+    command:
+      - 'start'
+      - '--advertise-addr=cockroachdb-2:26357'
+      - '--http-addr=cockroachdb-2:8082'
+      - '--listen-addr=cockroachdb-2:26357'
+      - '--sql-addr=cockroachdb-2:26258'
+      - '--insecure'
+      - '--join=cockroachdb-1:26357,cockroachdb-2:26357,cockroachdb-3:26357'
+    ports:
+      - 8082:8082
+      - 26258:26258
+    volumes:
+      - cockroachdb-2-data:/cockroach/cockroach-data
+    networks:
+      - public
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://cockroachdb-2:8082/health?ready=0"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  cockroachdb-3:
+    image: cockroachdb/cockroach:v24.2.3
+    container_name: cockroachdb-3
+    restart: unless-stopped
+    command:
+      - 'start'
+      - '--advertise-addr=cockroachdb-3:26357'
+      - '--http-addr=cockroachdb-3:8083'
+      - '--listen-addr=cockroachdb-3:26357'
+      - '--sql-addr=cockroachdb-3:26259'
+      - '--insecure'
+      - '--join=cockroachdb-1:26357,cockroachdb-2:26357,cockroachdb-3:26357'
+    ports:
+      - 8083:8083
+      - 26259:26259
+    volumes:
+      - cockroachdb-3-data:/cockroach/cockroach-data
+    networks:
+      - public
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://cockroachdb-3:8083/health?ready=0"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  cockroachdb-init:
+    image: cockroachdb/cockroach:v24.2.3
+    container_name: cockroachdb-init
+    restart: "no"
+    entrypoint: ["sh", "-c", "cockroach init --insecure --host=cockroachdb-1:26357"]
+    depends_on:
+      cockroachdb-1:
+        condition: service_healthy
+      cockroachdb-2:
+        condition: service_healthy
+      cockroachdb-3:
+        condition: service_healthy
+    networks:
+      - public
+
+volumes:
+  cockroachdb-1-data:
+    driver: local
+  cockroachdb-2-data:
+    driver: local
+  cockroachdb-3-data:
+    driver: local
+
+networks:
+  public:
+    name: public
