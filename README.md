@@ -36,6 +36,7 @@ My Collection of Docker Compose Files
 
 ## Databases
 
+- [cockroachdb](./cockroachdb)
 - [kafka-cluster](./kafka-cluster)
 - [mysql-phpadmin](./mysql-phpadmin)
 - [mysql-server](./mysql-server)
