@@ -21,20 +21,20 @@ My Collection of Docker Compose Files
 
 - [umami-analytics](./umami-analytics)
 
-## Blockchain
+### Blockchain
 
 - [bitcoin](./bitcoin)
 - [ethereum: geth and prysm](./geth-prysm)
 
-## Connectivity Tools
+### Connectivity Tools
 
 - [socks5-proxy](./socks5-proxy)
 
-## Dashboards
+### Dashboards
 
 - [homepage](./homepage)
 
-## Databases
+### Databases
 
 - [cockroachdb](./cockroachdb)
 - [kafka-cluster](./kafka-cluster)
@@ -43,38 +43,42 @@ My Collection of Docker Compose Files
 - [postgresql](./postgresql)
 - [redis](./redis)
 
-## Development Environments
+### Development Environments
 
 - [coder](./coder)
 
-## Identity and Access Management
+### Identity and Access Management
 
 - [keycloak](./keycloak)
 
-## Knowledge Base
+### Knowledge Base
 
 - [apache-answer](./apache-answer)
 
-## Media Servers
+### Media Servers
 
 - [htpc-media-server](./htpc-media-server/)
 
-## Monitoring
+### Monitoring
 
 - [beszel](./beszel)
 - [changedetection](./changedetection)
 
-## Project Management
+### Project Management
 
 - [planka](./planka)
 
-## Wiki and Note Taking Apps
+### Wiki and Note Taking Apps
 
 - [hoarder](./hoarder)
 - [kalmia](./kalmia)
 - [flatnotes](./flatnotes)
 - [haptic](./haptic)
 - [simple-wishlist](./simple-wishlist)
+
+## Similar Projects
+
+- [dominikhoebert/docker-projects](https://github.com/dominikhoebert/docker-projects)
 
 ## Stargazers over time
 
