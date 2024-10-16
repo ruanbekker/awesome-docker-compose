@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  gitea:
+    image: gitea/gitea:1.22.3
+    container_name: gitea
+    restart: unless-stopped
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=gitea-db:5432
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD=gitea
+      - GITEA__security__INSTALL_LOCK=true
+      - GITEA_USERNAME=gitea_admin
+      - GITEA_PASSWORD=password
+    volumes:
+      - gitea-data:/data
+      - ./scripts/create-user.sh:/data/git/create-user.sh
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3000:3000"
+      - "222:22"
+    depends_on:
+      gitea-db:
+        condition: service_healthy
+    networks:
+      - public
+
+  gitea-db:
+    image: postgres:14
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=gitea
+      - POSTGRES_PASSWORD=gitea
+      - POSTGRES_DB=gitea
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - public
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d gitea"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  gitea-runner:
+    image: gitea/act_runner:nightly
+    container_name: gitea-runner
+    restart: unless-stopped
+    environment:
+      - CONFIG_FILE=/config.yaml
+      - GITEA_INSTANCE_URL=http://gitea:3000
+      - GITEA_RUNNER_REGISTRATION_TOKEN=HuF42818bja4dOho2DHmyuEozuBfBXkq3u6H6wVZ
+      - GITEA_RUNNER_NAME="${RUNNER_NAME:-gitea-runner}"
+      - GITEA_RUNNER_LABELS="${RUNNER_LABELS}"
+    volumes:
+      - ./configs/config.yaml:/config.yaml
+      - gitea-runner-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - public
+
+  configure-gitea:
+    image: ruanbekker/containers:curl
+    container_name: configure-gitea
+    restart: "no"
+    command: ./opt/bootstrap.sh
+    environment:
+      - GITEA_HOST=gitea:3000
+      - GITEA_USERNAME=gitea_admin
+      - GITEA_PASSWORD=password
+    volumes:
+      - ./scripts/bootstrap.sh:/opt/bootstrap.sh
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      gitea:
+        condition: service_started
+    networks:
+      - public
+
+volumes:
+  gitea-data:
+    driver: local
+  gitea-runner-data:
+    driver: local
+  postgres-data:
+    driver: local
+
+networks:
+  public:
+    name: public
