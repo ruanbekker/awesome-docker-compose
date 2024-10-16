@@ -47,6 +47,7 @@ My Collection of Docker Compose Files
 ### Development Environments
 
 - [coder](./coder)
+- [vscodium](./vscodium)
 
 ### Identity and Access Management
 
