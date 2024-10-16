@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  vscodium:
+    image: lscr.io/linuxserver/vscodium:latest
+    container_name: vscodium
+    restart: unless-stopped
+    shm_size: "1gb"
+    cap_add:
+      - IPC_LOCK
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
+    volumes:
+      - vscodium-data:/config
+    ports:
+      - 3000:3000
+      - 3001:3001
+    networks:
+      - public
+
+volumes:
+  vscodium-data:
+    driver: local
+
+networks:
+  public:
+    name: public
