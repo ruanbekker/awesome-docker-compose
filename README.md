@@ -2,7 +2,7 @@
 
 My Collection of Docker Compose Files
 
-## Collection
+## Collection Categories
 
 - [Analytics](#analytics)
 - [Blockchain](#blockchain)
@@ -15,6 +15,7 @@ My Collection of Docker Compose Files
 - [Media Servers](#media-servers)
 - [Monitoring](#monitoring)
 - [Project Management](#project-management)
+- [Version Control](#version-control)
 - [Wiki and Note Taking Apps](#wiki-and-note-taking-apps)
 
 ### Analytics
@@ -67,6 +68,10 @@ My Collection of Docker Compose Files
 ### Project Management
 
 - [planka](./planka)
+
+### Version Control
+
+- [gitea](./gitea)
 
 ### Wiki and Note Taking Apps
 
