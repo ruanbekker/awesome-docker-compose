@@ -1,22 +1,23 @@
 # awesome-docker-compose
 
-My Collection of Docker Compose Files
+:rocket: A curated collection of Docker Compose files to streamline your development and deployment processes. Explore ready-to-use configurations that simplify container orchestration and enhance your workflow.
 
 ## Collection Categories
 
-- [Analytics](#analytics)
-- [Blockchain](#blockchain)
-- [Connectivity Tools](#connectivity-tools)
-- [Dashboards](#dashboards)
-- [Databases](#databases)
-- [Development Environments](#development-environments)
-- [Identity and Access Management](#identity-and-access-management)
-- [Knowledge Base](#knowledge-base)
-- [Media Servers](#media-servers)
-- [Monitoring](#monitoring)
-- [Project Management](#project-management)
-- [Version Control](#version-control)
-- [Wiki and Note Taking Apps](#wiki-and-note-taking-apps)
+- 📊 [Analytics](#analytics)
+- ⛓️ [Blockchain](#blockchain)
+- 🔗 [Connectivity Tools](#connectivity-tools)
+- 📊 [Dashboards](#dashboards)
+- 🗄️ [Databases](#databases)
+- 💻 [Development Environments](#development-environments)
+- 📁 [File Sharing](#file-sharing)
+- 🔑 [Identity and Access Management](#identity-and-access-management)
+- 📚 [Knowledge Base](#knowledge-base)
+- 🎥 [Media Servers](#media-servers)
+- 📈 [Monitoring](#monitoring)
+- 📅 [Project Management](#project-management)
+- 🔄 [Version Control](#version-control)
+- 📝 [Wiki and Note Taking Apps](#wiki-and-note-taking-apps)
 
 ### Analytics
 
@@ -48,6 +49,10 @@ My Collection of Docker Compose Files
 
 - [coder](./coder)
 - [vscodium](./vscodium)
+
+### File Sharing
+
+- [pingvin-share](./pingvin)
 
 ### Identity and Access Management
 
