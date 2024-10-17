@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  pingvin:
+    image: stonith404/pingvin-share
+    container_name: pingvin
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    environment:
+      - TRUST_PROXY=false # Set to true if a reverse proxy is in front of the container
+    volumes:
+      - pv-data:/opt/app/backend/data
+      - pv-images-data:/opt/app/frontend/public/img
+    networks:
+      - public
+
+volumes:
+  pv-data:
+    driver: local
+  pv-images-data:
+    driver: local
+
+networks:
+  public:
+    name: public
