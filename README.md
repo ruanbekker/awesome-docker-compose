@@ -73,6 +73,7 @@
 
 ### Project Management
 
+- [plane](./plane)
 - [planka](./planka)
 
 ### Version Control
