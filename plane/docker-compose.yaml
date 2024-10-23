@@ -1,0 +1,201 @@
+version: '3.8'
+
+services:
+  web:
+    image: ruanbekker/plane-web:v0.23.1
+    container_name: web
+    restart: unless-stopped
+    command: node web/server.js web
+    depends_on:
+      api:
+        condition: service_started
+    networks:
+      - public
+
+  admin:
+    image: ruanbekker/plane-admin:v0.23.1
+    container_name: admin
+    restart: unless-stopped
+    command: node admin/server.js admin
+    depends_on:
+      api:
+        condition: service_started
+      web:
+        condition: service_started
+    networks:
+      - public
+
+  space:
+    image: ruanbekker/plane-space:v0.23.1
+    container_name: space
+    restart: unless-stopped
+    command: node space/server.js space
+    depends_on:
+      api:
+        condition: service_started
+      web:
+        condition: service_started
+    networks:
+      - public
+
+  api:
+    image: ruanbekker/plane-api:v0.23.1
+    container_name: api
+    restart: unless-stopped
+    command: ./bin/docker-entrypoint-api.sh
+    env_file:
+      - ./env/apiserver.env
+    depends_on:
+      plane-db:
+        condition: service_started
+      plane-redis:
+        condition: service_started
+    networks:
+      - public
+
+  worker:
+    image: ruanbekker/plane-worker:v0.23.1
+    container_name: bgworker
+    restart: unless-stopped
+    command: ./bin/docker-entrypoint-worker.sh
+    env_file:
+      - ./env/apiserver.env
+    depends_on:
+      api:
+        condition: service_started
+      plane-db:
+        condition: service_started
+      plane-redis:
+        condition: service_started
+    networks:
+      - public
+
+  beat-worker:
+    image: ruanbekker/plane-beat-worker:v0.23.1
+    container_name: beatworker
+    restart: unless-stopped
+    command: ./bin/docker-entrypoint-beat.sh
+    env_file:
+      - ./env/apiserver.env
+    depends_on:
+      api:
+        condition: service_started
+      plane-db:
+        condition: service_started
+      plane-redis:
+        condition: service_started
+    networks:
+      - public
+
+  migrator:
+    image: ruanbekker/plane-migrator:v0.23.1
+    container_name: plane-migrator
+    restart: "no"
+    command: ./bin/docker-entrypoint-migrator.sh
+    env_file:
+      - ./env/apiserver.env
+    depends_on:
+      plane-db:
+        condition: service_started
+      plane-redis:
+        condition: service_started
+    networks:
+      - public
+
+  live:
+    image: ruanbekker/plane-live:v0.23.1
+    container_name: plane-live
+    restart: unless-stopped
+    command: node live/dist/server.js
+    networks:
+      - public
+
+  plane-db:
+    image: postgres:15.7-alpine
+    container_name: plane-db
+    restart: unless-stopped
+    command: postgres -c 'max_connections=1000'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    env_file:
+      - ./env/main.env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /var/lib/postgresql/data
+    networks:
+      - public
+  
+  plane-redis:
+    image: valkey/valkey:7.2.5-alpine
+    container_name: plane-redis
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+    networks:
+      - public
+
+  plane-mq:
+    image: rabbitmq:3.13.6-management-alpine
+    container_name: plane-mq
+    restart: unless-stopped
+    env_file:
+      - ./env/main.env
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - public
+
+  plane-minio:
+    image: minio/minio
+    container_name: plane-minio
+    restart: unless-stopped
+    command: server /export --console-address ":9090"
+    volumes:
+      - uploads:/export
+    environment:
+      MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID}
+      MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY}
+    networks:
+      - public
+
+  # Comment this if you already have a reverse proxy running
+  proxy:
+    image: ruanbekker/plane-proxy:v0.23.1
+    container_name: proxy
+    restart: unless-stopped
+    ports:
+      - ${NGINX_PORT}:80
+    environment:
+      FILE_SIZE_LIMIT: ${FILE_SIZE_LIMIT:-5242880}
+      BUCKET_NAME: ${AWS_S3_BUCKET_NAME:-uploads}
+    depends_on:
+      web:
+        condition: service_started
+      api:
+        condition: service_started
+      space:
+        condition: service_started
+      admin:
+        condition: service_started
+    networks:
+      - public
+
+volumes:
+  pgdata:
+    driver: local
+  redisdata:
+    driver: local
+  uploads:
+    driver: local
+  rabbitmq_data:
+    driver: local
+
+networks:
+  public:
+    name: public
