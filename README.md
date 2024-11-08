@@ -82,6 +82,7 @@
 
 ### Wiki and Note Taking Apps
 
+- [excalidraw](./excalidraw)
 - [hoarder](./hoarder)
 - [kalmia](./kalmia)
 - [flatnotes](./flatnotes)
