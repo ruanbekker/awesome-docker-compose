@@ -70,6 +70,7 @@
 
 - [beszel](./beszel)
 - [changedetection](./changedetection)
+- [bugsink](./bugsink)
 
 ### Project Management
 

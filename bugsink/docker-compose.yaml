@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  bugsink:
+    image: bugsink/bugsink:latest
+    container_name: bugsink
+    restart: unless-stopped
+    ports:
+      - 8000:8000
+    environment:
+      - SECRET_KEY=bugsink-example-RMLY5him9LybWgXimGat32Aa0QbgVscfgNPdQuZ42glcFPeiAx
+      - CREATE_SUPERUSER=admin:admin
+      - PORT=8000
+      - DATABASE_URL=mysql://root:bugsinkdba@bugsink-db:3306/bugsink
+    depends_on:
+      bugsink-db:
+        condition: service_healthy
+    networks:
+      - public
+
+  bugsink-db:
+    image: mysql:8.0
+    container_name: bugsink-db
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=bugsinkdba
+      - MYSQL_DATABASE=bugsink
+    volumes:
+      - ./data/bugsink-db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "exit | mysql -h localhost -P 3306 -u root -p$$MYSQL_ROOT_PASSWORD" ]
+      interval: 1s
+      timeout: 20s
+      retries: 30
+    networks:
+      - public
+
+networks:
+  public:
+    name: public
