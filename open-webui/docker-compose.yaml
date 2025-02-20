@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
+    container_name: open-webui
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    environment: # https://docs.openwebui.com/getting-started/env-configuration/
+      - CORS_ALLOW_ORIGIN=*
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_API_BASE_URL=http://ollama:11434
+      - WEBUI_SECRET_KEY=
+    depends_on:
+      ollama:
+        condition: service_started
+    volumes:
+      - open-webui:/app/backend/data
+    networks:
+      - public
+
+  ollama:
+    image: ollama/ollama:${OLLAMA_DOCKER_TAG-latest}
+    container_name: ollama
+    restart: unless-stopped
+    tty: true
+    pull_policy: always
+    volumes:
+      - ollama:/root/.ollama
+    networks:
+      - public
+
+networks:
+  public:
+    name: public
+
+volumes:
+  ollama: {}
+  open-webui: {}
