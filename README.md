@@ -4,6 +4,7 @@
 
 ## Collection Categories
 
+- 🤖 [AI Tools](#ai-tools)
 - 📊 [Analytics](#analytics)
 - ⛓️ [Blockchain](#blockchain)
 - 🔗 [Connectivity Tools](#connectivity-tools)
@@ -18,6 +19,10 @@
 - 📅 [Project Management](#project-management)
 - 🔄 [Version Control](#version-control)
 - 📝 [Wiki and Note Taking Apps](#wiki-and-note-taking-apps)
+
+### AI Tools
+
+- [open-webui](./open-webui)
 
 ### Analytics
 
