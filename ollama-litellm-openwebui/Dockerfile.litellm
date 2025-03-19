@@ -1,0 +1,2 @@
+FROM ghcr.io/berriai/litellm:main-v1.63.6-nightly
+RUN apk --no-cache add curl # for healthchecks

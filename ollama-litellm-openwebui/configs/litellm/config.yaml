@@ -1,0 +1,21 @@
+model_list:
+  - model_name: ollama-llama3.2
+    litellm_params:
+      model: "ollama/llama3.2:latest"
+      api_base: "http://ollama:11434"
+      litellm_provider: "ollama"
+
+  - model_name: ollama-gemma
+    litellm_params:
+      model: "ollama/gemma:2b"
+      api_base: "http://ollama:11434"
+      litellm_provider: "ollama"
+      #api_key: os.environ/AZURE_API_KEY # The `os.environ/` prefix tells litellm to read this from the env. See https://docs.litellm.ai/docs/simple_proxy#load-api-keys-from-vault
+
+litellm_settings:
+  set_verbose: True
+  cache: True        # REDIS_URL or REDIS_HOST, REDIS_PORT, REDIS_PASSWORD | https://docs.litellm.ai/docs/proxy/caching
+  cache_params:
+    type: redis
+    ttl: 600         # 10 minutes
+    namespace: "litellm.caching.caching"

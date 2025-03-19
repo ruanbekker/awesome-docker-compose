@@ -1,0 +1,108 @@
+
+version: '3.8'
+
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
+    container_name: open-webui
+    restart: unless-stopped
+    ports:
+      - 8090:8080
+    environment: # https://docs.openwebui.com/getting-started/env-configuration/
+      - CORS_ALLOW_ORIGIN=*
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_API_BASE_URL=http://ollama:11434
+      - WEBUI_SECRET_KEY=
+    depends_on:
+      litellm:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    volumes:
+      - open-webui:/app/backend/data
+    networks:
+      - public
+
+  ollama:
+    image: ollama/ollama:${OLLAMA_DOCKER_TAG-latest}
+    container_name: ollama
+    restart: unless-stopped
+    tty: true
+    pull_policy: always
+    volumes:
+      - ollama:/root/.ollama
+    networks:
+      - public
+
+  litellm:
+    # image: ghcr.io/berriai/litellm:main-stable
+    container_name: litellm
+    build:
+      context: .
+      dockerfile: Dockerfile.litellm
+    ports:
+      - "4000:4000"
+    environment:
+      DATABASE_URL: "postgresql://llmproxy:databasepassword@litellm-db:5432/litellm"
+      STORE_MODEL_IN_DB: "True"
+    env_file:
+      - .env
+    volumes:
+      - ./configs/litellm/config.yaml:/app/config.yaml
+    command:
+      - "--config=/app/config.yaml"
+    depends_on:
+      litellm-db:
+        condition: service_healthy
+      litellm-redis:
+        condition: service_healthy
+    networks:
+      - public
+    healthcheck:
+      test: [ "CMD", "sh", "-c", "curl -f http://localhost:4000/health/liveliness || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  litellm-db:
+    image: postgres:16
+    container_name: litellm-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=litellm
+      - POSTGRES_USER=llmproxy
+      - POSTGRES_PASSWORD=databasepassword
+    ports:
+      - 5432:5432
+    volumes:
+      - litellm-db:/var/lib/postgresql/data
+    networks:
+      - public
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d litellm -U llmproxy"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+  litellm-redis:
+    image: redis:6
+    container_name: litellm-redis
+    restart: unless-stopped
+    networks:
+      - public
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+networks:
+  public:
+    name: public
+
+volumes:
+  open-webui: {}
+  litellm-db: {}
+  ollama: {}
+
