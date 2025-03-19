@@ -22,7 +22,8 @@
 
 ### AI Tools
 
-- [open-webui](./open-webui)
+- [open-webui + ollama](./open-webui)
+- [open-webui + litellm + ollama](./ollama-litellm-openwebui)
 
 ### Analytics
 
