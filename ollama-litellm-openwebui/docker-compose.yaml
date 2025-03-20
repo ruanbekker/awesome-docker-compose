@@ -7,7 +7,7 @@ services:
     container_name: open-webui
     restart: unless-stopped
     ports:
-      - 8090:8080
+      - 8080:8080
     environment: # https://docs.openwebui.com/getting-started/env-configuration/
       - CORS_ALLOW_ORIGIN=*
       - OLLAMA_BASE_URL=http://ollama:11434

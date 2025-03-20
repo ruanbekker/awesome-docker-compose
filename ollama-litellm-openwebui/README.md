@@ -35,3 +35,11 @@ Then start the stack:
 ```bash
 make up
 ```
+
+## Usage
+
+Open WebUI can be access on port 8080 and you can setup your admin account on the frontend.
+
+LiteLLM can be access on port 4000 and the password is defined under `.env` as `LITELLM_MASTER_KEY="sk-example-master-key"` by default.
+
+ 
