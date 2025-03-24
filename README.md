@@ -8,6 +8,7 @@
 - 📊 [Analytics](#analytics)
 - ⛓️ [Blockchain](#blockchain)
 - 🧹 [Code Quality and Security](#code-quality-and-security)
+- ⚙️  [CI/CD & Automation](#cicd-and-automation)
 - 🔗 [Connectivity Tools](#connectivity-tools)
 - 📊 [Dashboards](#dashboards)
 - 🗄️ [Databases](#databases)
@@ -34,6 +35,10 @@
 
 - [bitcoin](./bitcoin)
 - [ethereum: geth and prysm](./geth-prysm)
+
+## CICD and Automation
+
+- [github-actions-runner](./github-actions-runner)
 
 ## Code Quality and Security
 

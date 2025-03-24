@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  github-actions-runner:
+    container_name: github-actions-runner
+    image: myoung34/github-runner:latest
+    environment:
+      - REPO_URL=https://github.com/ruanbekker/awesome-docker-compose
+      - RUNNER_NAME=awesome-docker-compose-runner
+      - RUNNER_TOKEN=${RUNNER_TOKEN}
+      - RUNNER_WORKDIR=/actions
+      - RUNNER_SCOPE=repo
+      - LABELS=self-hosted,linux,x64
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./actions:/actions
+    restart: always
+    networks:
+      - public
+
+networks:
+  public:
+    name: public
+
