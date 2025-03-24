@@ -7,6 +7,7 @@
 - 🤖 [AI Tools](#ai-tools)
 - 📊 [Analytics](#analytics)
 - ⛓️ [Blockchain](#blockchain)
+- 🧹 [Code Quality and Security](#code-quality-and-security)
 - 🔗 [Connectivity Tools](#connectivity-tools)
 - 📊 [Dashboards](#dashboards)
 - 🗄️ [Databases](#databases)
@@ -33,6 +34,10 @@
 
 - [bitcoin](./bitcoin)
 - [ethereum: geth and prysm](./geth-prysm)
+
+## Code Quality and Security
+
+- [sonarqube](./sonarqube)
 
 ### Connectivity Tools
 
