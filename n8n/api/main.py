@@ -54,11 +54,3 @@ async def create_joke(request: Request, db: Session = Depends(get_db)):
     db.refresh(db_joke)
     return {"id": db_joke.id, "content": db_joke.content}
 
-#@app.post("/jokes/")
-#def create_joke(joke: JokeIn, db: Session = Depends(get_db)):
-#    db_joke = Joke(content=joke.content)
-#    db.add(db_joke)
-#    db.commit()
-#    db.refresh(db_joke)
-#    return {"id": db_joke.id, "content": db_joke.content}
-
