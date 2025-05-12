@@ -6,7 +6,7 @@
 
 - 🤖 [AI Tools](#ai-tools)
 - 📊 [Analytics](#analytics)
-- ⚙️  [Automation and Workflows](#automation-and-workflows)
+- ⚙️ [Automation and Workflows](#automation-and-workflows)
 - ⛓️ [Blockchain](#blockchain)
 - 🧹 [Code Quality and Security](#code-quality-and-security)
 - ⚙️  [CI/CD & Automation](#cicd-and-automation)
