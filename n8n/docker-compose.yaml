@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n:1.91.3
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=n8n-db
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8ndb
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=n8npass
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=admin123
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_IMPORT_EXPORT_DIR=/home/node/workflows
+      - N8N_IMPORT_WORKFLOWS=true
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_SECURE_COOKIE=false # not recommended
+      - GENERIC_TIMEZONE=Africa/Johannesburg
+    volumes:
+      - n8n-data:/home/node/.n8n
+      - ./workflows:/home/node/workflows
+    depends_on:
+      - n8n-db
+    networks:
+      - public
+
+  n8n-db:
+    image: postgres:15
+    container_name: n8n-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=n8n
+      - POSTGRES_PASSWORD=n8npass
+      - POSTGRES_DB=n8ndb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - public
+
+  api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=n8n-db
+      - DB_NAME=n8ndb
+      - DB_USER=n8n
+      - DB_PASSWORD=n8npass
+    volumes:
+      - ./api/workflows:/app/workflows
+    depends_on:
+      - n8n-db
+    networks:
+      - public
+
+networks:
+  public:
+    name: public
+
+volumes:
+  postgres-data: {}
+  n8n-data: {}

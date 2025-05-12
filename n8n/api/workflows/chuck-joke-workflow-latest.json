@@ -1,0 +1,67 @@
+{
+  "name": "Jokes Workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [-340, -60]
+    },
+    {
+      "parameters": {
+        "url": "https://api.chucknorris.io/jokes/random",
+        "options": {}
+      },
+      "name": "Get Joke",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [-140, -60]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [\n  {\n    json: {\n      content: $json[\"value\"]\n    }\n  }\n];"
+      },
+      "name": "Prepare Joke",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [60, -60]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://api:8000/jokes/",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "=content",
+              "value": "={{ $json[\"content\"] }}"
+            }
+          ]
+        }
+      },
+      "name": "Store Joke in DB",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [260, -60]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [[{ "node": "Get Joke", "type": "main", "index": 0 }]]
+    },
+    "Get Joke": {
+      "main": [[{ "node": "Prepare Joke", "type": "main", "index": 0 }]]
+    },
+    "Prepare Joke": {
+      "main": [[{ "node": "Store Joke in DB", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": []
+}
+

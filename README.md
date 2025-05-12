@@ -6,6 +6,7 @@
 
 - 🤖 [AI Tools](#ai-tools)
 - 📊 [Analytics](#analytics)
+- ⚙️ [Automation and Workflows](#automation-and-workflows)
 - ⛓️ [Blockchain](#blockchain)
 - 🧹 [Code Quality and Security](#code-quality-and-security)
 - ⚙️  [CI/CD & Automation](#cicd-and-automation)
@@ -30,6 +31,10 @@
 ### Analytics
 
 - [umami-analytics](./umami-analytics)
+
+### Automation and Workflows
+
+- [n8n](./n8n)
 
 ### Blockchain
 
