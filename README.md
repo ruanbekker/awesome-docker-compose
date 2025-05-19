@@ -104,6 +104,7 @@
 
 ### Wiki and Note Taking Apps
 
+- [excalidocker-rs](./excalidocker-rs)
 - [excalidraw](./excalidraw)
 - [hoarder](./hoarder)
 - [kalmia](./kalmia)
