@@ -44,6 +44,7 @@
 ## CICD and Automation
 
 - [github-actions-runner](./github-actions-runner)
+- [KubeStellar Console](https://github.com/kubestellar/console) - Multi-cluster Kubernetes management console with GitOps automation; deploy, monitor and manage containerized workloads across multiple Kubernetes clusters.
 
 ## Code Quality and Security
 
