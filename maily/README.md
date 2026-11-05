@@ -18,8 +18,9 @@ make up
 
 Maily web console and REST API will be available at `http://localhost:8477`.
 
-Default authentication:
+Default configuration:
 - `MAILY_API_KEY`: `your_secret_api_key` (can be overridden via environment variable)
+- `MAILY_VERSION`: `latest` (can be overridden via environment variable)
 
 ## Resources
 

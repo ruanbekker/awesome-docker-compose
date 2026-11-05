@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   maily:
-    image: ghcr.io/stormsia/maily:latest
+    image: ghcr.io/stormsia/maily:${MAILY_VERSION:-latest}
     container_name: maily
     restart: unless-stopped
     ports:
