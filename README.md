@@ -69,6 +69,7 @@
 ### Development Environments
 
 - [coder](./coder)
+- [maily](./maily)
 - [vscodium](./vscodium)
 
 ### File Sharing
